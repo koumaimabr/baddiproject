@@ -21,19 +21,19 @@ public Afd(){
 //////////////////////alphabet /////////////////////////////////////////////////////////////////////
 public void ajouterSymbole(){
 	char a;int z;
-	System.out.print("donner un symbole de type charactère:   ");
+	System.out.print("donner un symbole de type charactÃ¨re:   ");
 	a=lectureClavier.next().charAt(0);
 	if(tailleAlphabet()!=0){
 		z=alphabet.indexOf(a);
 		if(z !=-1){
-		 System.out.println("ce sympole existe deja, le  charactère est refusé");}
+		 System.out.println("ce sympole existe deja, le  charactÃ¨re est refusÃ©");}
 		
 		else{alphabet.add(new Character(a));
-		System.out.println("votre symbole ajouté est :   "+a);}
+		System.out.println("votre symbole ajoutÃ© est :   "+a);}
 			}
 		else{
 	alphabet.add(new Character(a));
-	System.out.println("votre symbole ajouté est :   "+a);}
+	System.out.println("votre symbole ajoutÃ© est :   "+a);}
 	
 }
 
@@ -45,10 +45,10 @@ public void supprimerSymbole(){
 	num=alphabet.indexOf(ch);
 	if(num >= 0){
 	alphabet.remove(num);
-	System.out.println("la suppression est faite avec succés ");
+	System.out.println("la suppression est faite avec succÃ©s ");
 	}
 	else
-	System.out.println("ce charactère n'existe pas ");
+	System.out.println("ce charactÃ¨re n'existe pas ");
 }
 
 public int tailleAlphabet(){
@@ -71,7 +71,7 @@ public void menuAlphabet(){
 }
 //////////////////////////Etats
 public void menuEtat(){
-	System.out.println("choix 1: ajouterun état:    ");
+	System.out.println("choix 1: ajouterun Ã©tat:    ");
 	//System.out.println("choix 2: supprimer etat:    ");
 	System.out.println("choix 2: afficher etat:     ");
 	System.out.println("choix 3: afficher taille etats");
@@ -81,7 +81,7 @@ public void menuEtat(){
 public void ajouterEtats(){
 	int  a;String e;
    
-	System.out.print("donnez le nombre des états que vous souhaitez utilisés \n dans ce afd, par la suite on vous généra les noms de ce états comme suit en respectant l'ordre : q0,q1,q2,q3,....tel que q0 est \n l'état initial;cette démarche simplifie l'étude par la suite:    ");
+	System.out.print("donnez le nombre des Ã©tats que vous souhaitez utilisÃ©s \n dans ce afd, par la suite on vous gÃ©nÃ©ra les noms de ce Ã©tats comme suit en respectant l'ordre : q0,q1,q2,q3,....tel que q0 est \n l'Ã©tat initial;cette dÃ©marche simplifie l'Ã©tude par la suite:    ");
 	a=lectureClavier.nextInt();
 
 	for(int i=0;i<a;i++){
@@ -94,13 +94,13 @@ public void ajouterEtats(){
 public void supprimeretat(){
     int num;
     String choix;
-    System.out.print("saisir l'état : ");
+    System.out.print("saisir l'Ã©tat : ");
     choix=lectureClavier.nextLine();
     num=alphabet.indexOf(choix);
     if(num != -1)
 	alphabet.remove(num);
     else 
-    	System.out.print("cette état n'existe pas ");	
+    	System.out.print("cette Ã©tat n'existe pas ");	
 	
 }
 
@@ -155,10 +155,10 @@ private boolean verifierEtat(String f) {
 /////////////////////////////////////////Etats finaux
 public void saisirEtatFinaux(){
 	String f;boolean test;
-	System.out.println("Veuillez saisir le nombre d'états finaux: ");
+	System.out.println("Veuillez saisir le nombre d'Ã©tats finaux: ");
 	int nombreEtatFinaux=lectureClavier.nextInt();
 	for(int i=0;i<nombreEtatFinaux;i++){
-		System.out.print("Veuillez saisir le"+(1+i)+" état final: ");
+		System.out.print("Veuillez saisir le"+(1+i)+" Ã©tat final: ");
 	do{
 		f=lectureClavier.nextLine();
 		test=verifierEtat(f);
@@ -183,7 +183,7 @@ public int tailleEtatsFinaux(){
 /*
 public void saisirEtatInitial(){
 	String f;boolean test;
-	System.out.print("Veuillez saisir l'état initial:   ");
+	System.out.print("Veuillez saisir l'Ã©tat initial:   ");
 	do{
 		f=lectureClavier.nextLine();
 		test=verifierEtat(f);
@@ -197,7 +197,7 @@ public String getEtatInitial(){
 }
 
 public void affichageEtatsInitial(){
-  System.out.println("l'état initial de votre AFD est : "+getEtatInitial());
+  System.out.println("l'Ã©tat initial de votre AFD est : "+getEtatInitial());
 }
 
 }

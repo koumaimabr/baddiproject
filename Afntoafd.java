@@ -1,4 +1,3 @@
-
 package afnTOafd;
 
 import java.util.*;
@@ -33,7 +32,7 @@ public class Afntoafd  {
 		ArrayList <String> temp;
 	if(a=='o'){ //sans epsilon transition
 		/*
-		fon=new String[4][3];/////////////§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
+		fon=new String[4][3];/////////////Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§Â§
 			fon[0][0]=" ";
 			for (int i=1;i<=schema.alphabet.size();i++)
 				fon[0][i]=schema.alphabet.get(i-1).toString();
@@ -66,11 +65,9 @@ public class Afntoafd  {
 					temp.add(c);
 				}
 			}
-
 			remplircolonne(temp,schema);
 			remplirligne(schema.alphabet.size());
 		
-
 			//}while(fon[ligneGlobale][0]!= null);
 			}while(ligneGlobale<=3);
 			*/
@@ -162,7 +159,6 @@ public class Afntoafd  {
 			else
 				fon[ligneGlobale][col]+=sc.fonctionTransition[z][j];	
 		}
-
 		
 		tp=new ArrayList <String> ();
 		for(int l=0;l<sc.etats.size();l++){
