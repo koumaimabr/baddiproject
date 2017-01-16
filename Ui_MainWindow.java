@@ -80,9 +80,38 @@ public class Ui_MainWindow extends QMainWindow
     // Message box pour afficher la taille de l'alphabet   
     public QMessageBox displayAlphabetSizeMsgBox;
 
-
-
     // fin de Add symbol diolog box declarations
+    
+    //States window, la fenetre qui permet d'ajouter les etats
+    public QWidget centralwidgetStatesWindow;
+    public QWidget verticalLayoutWidgetStatesWin;
+    public QVBoxLayout verticalLayoutStatesWindow;
+    public QPushButton addState;
+    public QPushButton displayStates;
+    public QPushButton displayStatesSize;
+    public QTextBrowser textBrowserStatesWindow;
+    public QPushButton quitButtonStatesWindow;
+    public QPushButton nextButtonStatesWindow; 
+    
+    // Afficher une erreur si l'utilisateur clique sur "suivant" sans saisir aucun symbol  
+    public QMessageBox displayErrorNoSymbolEnteredMsgBox;
+   
+    // (la fenêtre qui permet de choisir le nombre des états finaux
+    
+    public QWidget centralwidgetFinalStateWindow;
+    public QTextBrowser textBrowserFinalStateWindow;
+    public QPushButton quitButtonFinalStateWindow;
+    public QPushButton nextButtonFinalStateWindow;
+    public QTextBrowser enterNumberOfFinalStates;
+    public QSpinBox finalStatesNumber;
+    
+    // Afficher une erreur si l'utilisateur clique sur "suivant" sans saisir les etats  
+    public QMessageBox displayErrorNoStateEnteredMsgBox;
+    
+
+    
+    //Fin de la final state window
+    
     
     /*************************************************************************************
      ************************  La Main Window du programme     ***************************
@@ -152,6 +181,7 @@ public class Ui_MainWindow extends QMainWindow
         //quitter
         quitterButtonMainWin.pressed.connect(this, "close()");
         convertAndMinimizeNfaButton.clicked.connect(this, "setupCheckboxes1()"); 
+        
 
         connectSlotsByName();
         show();
@@ -277,8 +307,10 @@ public class Ui_MainWindow extends QMainWindow
      quitButton1.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Quitter", null));
      nextButtonCheckboxes1.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Suivant >", null));     centralwidgetCheckboxes1.show();
      removeSymbol.clicked.connect(this, "delSymbolsBox()");
+     nextButtonCheckboxes1.clicked.connect(this, "setupStatesWindow()");
+
      centralwidgetCheckboxes1.show();
-     this.connectSlotsByName();
+     centralwidgetCheckboxes1.connectSlotsByName();
  }
 
 	/***********************************************************************************
@@ -298,6 +330,7 @@ public class Ui_MainWindow extends QMainWindow
         addSymbolPopUpBoxButton = new QPushButton(addSymbolDialogBox);
         addSymbolPopUpBoxButton.setObjectName("addSymbolPopUpBoxButton");
         addSymbolPopUpBoxButton.setGeometry(new QRect(200, 190, 82, 28));
+        addSymbolPopUpBoxButton.setDefault(true);
         enterSymbolEditBox = new QLineEdit(addSymbolDialogBox);
         enterSymbolEditBox.setObjectName("enterSymbolEditBox");
         enterSymbolEditBox.setGeometry(new QRect(50, 90, 191, 31));
@@ -364,7 +397,8 @@ public class Ui_MainWindow extends QMainWindow
 			}
 			
 			exemple1.ajouterSymbole(symbolEntered);
-	       System.out.println(symbolEntered+ "was added");	
+	       // System.out.println(symbolEntered+ "was added");
+			addSymbolDialogBox.close();
 		}
         	
         
@@ -459,7 +493,7 @@ public class Ui_MainWindow extends QMainWindow
     public void displayAlphabetMessageBox()
     {
     	String displayAlphabetText = "";
-    	displayAlphabetText = "A = {"+exemple1.affichageAlphabet()+"}";
+    	displayAlphabetText = "        A = {"+exemple1.affichageAlphabet()+"}        ";
 
     	displayAlphabetMsgBox = new QMessageBox(centralwidgetCheckboxes1);
 		QMessageBox.information(centralwidgetCheckboxes1, "Voici l'alphabet saisi :", displayAlphabetText);
@@ -478,6 +512,160 @@ public class Ui_MainWindow extends QMainWindow
 		QMessageBox.information(centralwidgetCheckboxes1, "Taille de l'alphabet"
 				+ "si :", displayAlphabetSize+exemple1.tailleAlphabet());
 		
+    }
+    
+	/***********************************************************************************
+	 **********************    FONCTION DE LA TROISIEME FENÊTRE   **********************
+	 ***********************************************************************************/
+    
+    public void setupStatesWindow()
+    {
+    	// pour afficher une erreur si l'utilisateur clique sur suivant sans saisir un symbole
+    	if (exemple1.alphabet.isEmpty()) 
+    	{
+    		displayErrorNoSymbolEnteredMsgBox = new QMessageBox(centralwidgetStatesWindow);
+    		QMessageBox.critical(centralwidgetStatesWindow, "Erreur", "Vous n'avez saisi aucun symbole!");
+    		return;
+    	}
+    	
+	    //Cacher le contenu du widget de la deuxieme fenetre
+		centralwidgetCheckboxes1.hide();
+		 
+		//Creer un nouveau widget central pour la deuxieme fênetre
+		centralwidgetStatesWindow = new QWidget(this);
+		
+		centralwidgetStatesWindow = new QWidget(this);
+	    centralwidgetStatesWindow.setObjectName("centralwidgetStatesWindow");
+	    verticalLayoutWidgetStatesWin = new QWidget(centralwidgetStatesWindow);
+	    verticalLayoutWidgetStatesWin.setObjectName("verticalLayoutWidgetStatesWin");
+	    verticalLayoutWidgetStatesWin.setGeometry(new QRect(160, 150, 491, 311));
+	    verticalLayoutStatesWindow = new QVBoxLayout(verticalLayoutWidgetStatesWin);
+	    verticalLayoutStatesWindow.setObjectName("verticalLayoutStatesWindow");
+	    addState = new QPushButton(verticalLayoutWidgetStatesWin);
+	    addState.setObjectName("addState");
+	
+	    verticalLayoutStatesWindow.addWidget(addState);
+	
+	    displayStates = new QPushButton(verticalLayoutWidgetStatesWin);
+	    displayStates.setObjectName("displayStates");
+	
+	    verticalLayoutStatesWindow.addWidget(displayStates);
+	
+	    displayStatesSize = new QPushButton(verticalLayoutWidgetStatesWin);
+	    displayStatesSize.setObjectName("displayStatesSize");
+	
+	    verticalLayoutStatesWindow.addWidget(displayStatesSize);
+	
+	    textBrowserStatesWindow = new QTextBrowser(centralwidgetStatesWindow);
+	    textBrowserStatesWindow.setObjectName("textBrowserStatesWindow");
+	    textBrowserStatesWindow.setGeometry(new QRect(30, 20, 741, 101));
+	    quitButtonStatesWindow = new QPushButton(centralwidgetStatesWindow);
+	    quitButtonStatesWindow.setObjectName("quitButtonStatesWindow");
+	    quitButtonStatesWindow.setGeometry(new QRect(680, 490, 82, 28));
+	    nextButtonStatesWindow = new QPushButton(centralwidgetStatesWindow);
+	    nextButtonStatesWindow.setObjectName("nextButtonStatesWindow");
+	    nextButtonStatesWindow.setGeometry(new QRect(590, 490, 82, 28));
+	    this.setCentralWidget(centralwidgetStatesWindow);
+	    quitButtonStatesWindow.pressed.connect(this, "close()");
+	    nextButtonStatesWindow.clicked.connect(this, "setupFinalStateWindow()");
+	
+	    centralwidgetStatesWindow.connectSlotsByName();
+	    
+	    this.setWindowTitle(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "MainWindow", null));
+	    addState.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Ajouter le nombre des \u00e9tats", null));
+	    displayStates.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Afficher les \u00e9tats", null));
+	    displayStatesSize.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Afficher la taille des"
+	    + " \u00e9tats", null));
+	    textBrowserStatesWindow.setHtml(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "<!DOCTYPE HTML"
+	    + " PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"+"<html><head><meta"
+	    + " name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"+"p, li { white-space: pre-wrap; }\n"+
+		"</style></head><body style=\" font-family:'Noto Sans'; font-size:10pt; font-weight:400; font-style:normal;\">\n"+
+		"<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px;"
+		+ " margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"+
+		"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;"
+		+ " -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; text-decoration: underline;"
+		+ "\">CONVERSTION D'UN </span><span style=\" font-size:12pt; font-weight:600; text-decoration: underline;"
+		+ "\">AFN </span><span style=\" font-size:12pt; text-decoration: underline;\">EN UN </span>"
+		+ "<span style=\" font-size:12pt; font-weight:600; text-decoration: underline;\">AFD</span></p>\n"+
+		"<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px;"
+		+ " margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;"
+		+ " text-decoration: underline;\"><br /></p>\n"+"<p align=\"center\" style=\" margin-top:0px;"
+		+ " margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
+		+ "Ce programme permet de convertir un <span style=\" font-weight:600;\">AFD</span> en un "
+		+ "<span style=\" font-weight:600;\">AFD</span> et/ou le minimiser.</p></body></html>", null));
+	    quitButtonStatesWindow.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Quitter", null));
+	    nextButtonStatesWindow.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Suivant >", null));
+    }
+    
+    /***********************************************************************************
+	 **********************    FONCTION DE LA 4 EME FENÊTRE   **************************
+	 ***********************************************************************************/
+    
+    public void setupFinalStateWindow()
+    {
+    	// pour afficher une erreur si l'utilisateur clique sur suivant sans saisir les etats
+    	if (exemple1.etats.isEmpty()) 
+    	{
+    		displayErrorNoStateEnteredMsgBox = new QMessageBox(centralwidgetFinalStateWindow);
+    		QMessageBox.critical(centralwidgetFinalStateWindow, "Erreur", "Votre automate ne contient aucun état");
+    		return;
+    	}
+    	
+    	//Cacher le contenu du widget de la 3eme fenetre
+    	  centralwidgetStatesWindow.hide();
+    	 
+    	//Creer un nouveau widget central pour la 4eme fênetre
+    	  centralwidgetFinalStateWindow = new QWidget(this);
+    	
+    	  textBrowserFinalStateWindow = new QTextBrowser(centralwidgetFinalStateWindow);
+          textBrowserFinalStateWindow.setObjectName("textBrowserFinalStateWindow");
+          textBrowserFinalStateWindow.setGeometry(new QRect(30, 20, 741, 101));
+          quitButtonFinalStateWindow = new QPushButton(centralwidgetFinalStateWindow);
+          quitButtonFinalStateWindow.setObjectName("quitButtonFinalStateWindow");
+          quitButtonFinalStateWindow.setGeometry(new QRect(680, 490, 82, 28));
+          nextButtonFinalStateWindow = new QPushButton(centralwidgetFinalStateWindow);
+          nextButtonFinalStateWindow.setObjectName("nextButtonFinalStateWindow");
+          nextButtonFinalStateWindow.setGeometry(new QRect(590, 490, 82, 28));
+          enterNumberOfFinalStates = new QTextBrowser(centralwidgetFinalStateWindow);
+          enterNumberOfFinalStates.setObjectName("enterNumberOfFinalStates");
+          enterNumberOfFinalStates.setGeometry(new QRect(160, 260, 261, 71));
+          finalStatesNumber = new QSpinBox(centralwidgetFinalStateWindow);
+          finalStatesNumber.setObjectName("finalStatesNumber");
+          finalStatesNumber.setGeometry(new QRect(500, 260, 111, 71));
+          this.setCentralWidget(centralwidgetFinalStateWindow); 
+          quitButtonFinalStateWindow.pressed.connect(this, "close()");
+
+          centralwidgetFinalStateWindow.connectSlotsByName();
+          
+          this.setWindowTitle(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "MainWindow", null));
+          textBrowserFinalStateWindow.setHtml(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "<!DOCTYPE HTML"
+          + " PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"+
+		  "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"+
+		  "p, li { white-space: pre-wrap; }\n"+"</style></head><body style=\" font-family:'Noto Sans'; font-size:10pt; "
+		  + "font-weight:400; font-style:normal;\">" + "\n"+ "<p align=\"center\" style=\"-qt-paragraph-type:empty;"
+		  + " margin-top:0px; margin-bottom:0px; " + "margin-left:0px;"+ " margin-right:0px; -qt-block-indent:0; "
+		  + "text-indent:0px;\"><br /></p>\n"+ "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px;"
+		  + " margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;"
+		  + " text-decoration: underline;\">CONVERSTION D'UN </span><span style=\" font-size:12pt; font-weight:600; "
+		  + "text-decoration: underline;\">AFN </span><span style=\" font-size:12pt; text-decoration: underline;\">EN"
+		  + " UN </span><span style=\" font-size:12pt; font-weight:600; text-decoration: underline;\">AFD</span></p>\n"+
+		  "<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px;"
+		  + " margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;"
+		  + " text-decoration: underline;\"><br /></p>\n"+ "<p align=\"center\" style=\" margin-top:0px;"
+		  + " margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Ce"
+		  + " programme permet de convertir un <span style=\" font-weight:600;\">AFD</span> en un <span style=\""
+		  + " font-weight:600;\">AFD</span> et/ou le minimiser.</p></body></html>", null));
+          quitButtonFinalStateWindow.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Quitter", null));
+          nextButtonFinalStateWindow.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Suivant >", null));
+          enterNumberOfFinalStates.setHtml(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"+
+		  "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"+
+		  "p, li { white-space: pre-wrap; }\n"+
+		  "</style></head><body style=\" font-family:'Noto Sans'; font-size:10pt; font-weight:400; font-style:normal;\">"
+		  + "\n"+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px;"
+		  + " margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"+ "<p style=\" margin-top:0px;"
+		  + " margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"> "
+		  + " Veuillez saisir le nombre d'\u00e9tats finaux:</p></body></html>", null));
+		    	
     }
     
 	/***********************************************************************************
