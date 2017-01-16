@@ -5,6 +5,8 @@
 /* **************************************************************************** */
 
 package afnTOafd;
+import java.util.*;
+
 import com.trolltech.qt.gui.* ;
 import com.trolltech.qt.core.*;
 
@@ -52,6 +54,18 @@ public class Ui_MainWindow extends QMainWindow
     public QDialog addSymbolDialogBox;
     public boolean errorSymbolShown = false;
     
+
+    // Declarations pour le "del symbols" dialog box (pour ajouter un nouveau symbole)
+    
+    public QPushButton quitButtonDelSymbolBox;
+    public QPushButton delSymbolPopUpBoxButton;
+    public QComboBox delSymbolComboBox;
+    public QLabel delSymbolLabel;
+    public QLabel errorSymbolsEmpty;
+    public QDialog delSymbolDialogBox;
+    public QMessageBox warnSymbolEmpty;
+    public QMessageBox warnSymbolNull;
+
     // fin de Add symbol diolog box declarations
     
    //fonction de la mainWindow
@@ -156,11 +170,11 @@ public class Ui_MainWindow extends QMainWindow
  //Fonction de la seconde fênetre  
  public void setupCheckboxes1() 
  {
-	 //Cacher le contenu du widget central
-	 centralwidgetMainWin.hide();
+	//Cacher le contenu du widget central
+	centralwidgetMainWin.hide();
 	 
-	 //Creer un nouveau widget vcentral pour la deuxieme fênetre
-	 centralwidgetCheckboxes1 = new QWidget(this);
+	//Creer un nouveau widget vcentral pour la deuxieme fênetre
+	centralwidgetCheckboxes1 = new QWidget(this);
 	 
 	
      centralwidgetCheckboxes1.setObjectName("centralwidgetCheckboxes1");
@@ -235,6 +249,7 @@ public class Ui_MainWindow extends QMainWindow
      
      quitButton1.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Quitter", null));
      nextButtonCheckboxes1.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Suivant >", null));     centralwidgetCheckboxes1.show();
+     removeSymbol.clicked.connect(this, "delSymbolsBox()");
      centralwidgetCheckboxes1.show();
      this.connectSlotsByName();
  }
@@ -242,6 +257,7 @@ public class Ui_MainWindow extends QMainWindow
  //add symbols dialog box
     public void addSymbolsBox()
     {
+    	
     	addSymbolDialogBox = new QDialog(centralwidgetCheckboxes1);
     	addSymbolDialogBox.setObjectName("addSymbolDialogBox");
         addSymbolDialogBox.setEnabled(true);
@@ -259,6 +275,9 @@ public class Ui_MainWindow extends QMainWindow
         saisirSymboleLabel = new QLabel(addSymbolDialogBox);
         saisirSymboleLabel.setObjectName("saisirSymboleLabel");
         saisirSymboleLabel.setGeometry(new QRect(50, 50, 281, 18));
+        if (exemple1.alphabet.isEmpty()) 
+        	enterSymbolEditBox.setText("a");
+        	
         // errorSymbolAlreadyExist = new QLabel(addSymbolDialogBox);
        //  errorSymbolAlreadyExist.setObjectName("errorSymbolAlreadyExist");
         
@@ -286,7 +305,11 @@ public class Ui_MainWindow extends QMainWindow
     //La fonction qui permet d'ajouter un symbole
     public void addSymbol()
     {
-        
+        if (enterSymbolEditBox.text().isEmpty() ) {
+        	warnSymbolNull = new QMessageBox(addSymbolDialogBox);
+        	QMessageBox.critical(addSymbolDialogBox, "Error", "Please enter a symbol!");
+        	return;
+        }
     	char symbolEntered;  	
         symbolEntered = new Character(enterSymbolEditBox.text().charAt(0));
         System.out.println("Vous avez saisi" +symbolEntered);
@@ -294,7 +317,7 @@ public class Ui_MainWindow extends QMainWindow
 		if (exemple1.alphabet.indexOf(symbolEntered) > -1)
 		{
 			errorSymbolAlreadyExist.show();
-	        errorSymbolShown = true;
+	       errorSymbolShown = true;
 		}
 		else
 		{
@@ -305,8 +328,80 @@ public class Ui_MainWindow extends QMainWindow
 			}
 			
 			exemple1.ajouterSymbole(symbolEntered);
-	        System.out.println(symbolEntered+ "was added");	
+	       System.out.println(symbolEntered+ "was added");	
 		}
+        	
+        
+    }
+    
+    public void delSymbolsBox()
+    {
+    	if (exemple1.alphabet.isEmpty()) {
+    		warnSymbolEmpty = new QMessageBox(centralwidgetCheckboxes1);
+    		QMessageBox.critical(centralwidgetCheckboxes1, "Erreur", "Vous n'avez saisi aucun symbole!");
+    		return;
+    	}
+    	delSymbolDialogBox = new QDialog(centralwidgetCheckboxes1);
+    	delSymbolDialogBox.setObjectName("delSymbolDialogBox");
+    	delSymbolDialogBox.setEnabled(true);
+    	delSymbolDialogBox.resize(new QSize(392, 235).expandedTo(delSymbolDialogBox.minimumSizeHint()));
+        quitButtonDelSymbolBox = new QPushButton(delSymbolDialogBox);
+        quitButtonDelSymbolBox.setObjectName("quitButtonDelSymbolBox");
+        quitButtonDelSymbolBox.setGeometry(new QRect(290, 190, 82, 28));
+        delSymbolPopUpBoxButton = new QPushButton(delSymbolDialogBox);
+        delSymbolPopUpBoxButton.setObjectName("delSymbolPopUpBoxButton");
+        delSymbolPopUpBoxButton.setGeometry(new QRect(180, 190, 102, 28));
+        delSymbolComboBox = new QComboBox(delSymbolDialogBox);
+        delSymbolComboBox.setObjectName("enterSymbolEditBox");
+        delSymbolComboBox.setGeometry(new QRect(50, 90, 191, 31));
+        List<String> symbolsStringList = new ArrayList<String>(exemple1.alphabet.size());
+        for (char tchar : exemple1.alphabet) { 
+        	symbolsStringList.add(String.valueOf(tchar)); 
+        		}
+        delSymbolComboBox.insertItems(1, symbolsStringList);
+        delSymbolLabel = new QLabel(delSymbolDialogBox);
+        delSymbolLabel.setObjectName("saisirSymboleLabel");
+        delSymbolLabel.setGeometry(new QRect(50, 50, 281, 18));
+        // errorSymbolAlreadyExist = new QLabel(addSymbolDialogBox);
+       //  errorSymbolAlreadyExist.setObjectName("errorSymbolAlreadyExist");
+        
+        // errorSymbolAlreadyExist.setGeometry(new QRect(50, 140, 311, 18));
+        
+        //bouttons text..etc
+        delSymbolDialogBox.setWindowTitle(com.trolltech.qt.core.QCoreApplication.translate("delSymbolDialogBox", "Ajouter un symbole", null));
+        quitButtonDelSymbolBox.setText(com.trolltech.qt.core.QCoreApplication.translate("delSymbolDialogBox", "Fermer", null));
+        delSymbolPopUpBoxButton.setText(com.trolltech.qt.core.QCoreApplication.translate("delSymbolDialogBox", "+ Ajouter", null));
+        delSymbolLabel.setText(com.trolltech.qt.core.QCoreApplication.translate("delSymbolDialogBox", "Saisir un symbole pour le supprimer :", null));
+        errorSymbolAlreadyExist = new QLabel(delSymbolDialogBox);
+        errorSymbolAlreadyExist.setObjectName("errorSymbolAlreadyExist");
+        errorSymbolAlreadyExist.setGeometry(new QRect(50, 140, 311, 18));
+        errorSymbolAlreadyExist.setText(com.trolltech.qt.core.QCoreApplication.translate("addSymbolDialogBox", "<html><head/><body><p><span style=\" "
+        		+ "color:#cf0000;\">Il n'ya plus de symboles à supprimer</span></p></body></html>", null));
+        delSymbolPopUpBoxButton.setText("Supprimer");
+        quitButtonDelSymbolBox.setText("Annuler");
+        errorSymbolAlreadyExist.hide();
+        
+        quitButtonDelSymbolBox.pressed.connect(delSymbolDialogBox, "close()");
+        // errorSymbolAlreadyExist.hide();
+        delSymbolDialogBox.show();
+        delSymbolPopUpBoxButton.clicked.connect(this, "delSymbol()");
+        delSymbolDialogBox.connectSlotsByName(); 
+        
+    }
+    //La fonction qui permet d'ajouter un symbole
+    public void delSymbol()
+    {
+    	if (delSymbolComboBox.count() < 1) {
+    		errorSymbolAlreadyExist.show();
+    		return;
+    	}
+        
+    	exemple1.alphabet.remove(Character.valueOf(delSymbolComboBox.currentText().charAt(0)));
+    	delSymbolComboBox.removeItem(delSymbolComboBox.currentIndex());
+    	delSymbolDialogBox.close();
+    	
+        // Vérifier si le symbole saisi existe déja, et afficher un erreur si c'est la cas
+        // errorSymbolAlreadyExist
         	
         
     }
@@ -316,6 +411,8 @@ public class Ui_MainWindow extends QMainWindow
          exemple2 = new Afntoafd();
 
 		QApplication.initialize(args);
+    	 
+
 		initWindow = new Ui_MainWindow();
 		
 		QApplication.execStatic(); 

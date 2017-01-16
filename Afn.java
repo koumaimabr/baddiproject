@@ -23,36 +23,15 @@ public class Afn{
 	public void ajouterSymbole(char a)
 	{
 		alphabet.add(new Character(a));
-		/*char a;int z;
-		System.out.print("donner un symbole de type charactère:   ");
-		a=lectureClavier.next().charAt(0);
-		if(tailleAlphabet()!=0){
-			z=alphabet.indexOf(a);
-			if(z !=-1){
-			 System.out.println("ce sympole existe deja, le  charactère est refusé");}
-			
-			else{alphabet.add(new Character(a));
-			System.out.println("votre symbole ajouté est :   "+a);}
-				}
-			else{
-		alphabet.add(new Character(a));
-		System.out.println("votre symbole ajouté est :   "+a);}*/
 		
 	}
 
-	public void supprimerSymbole(){
-	    int num;char choix;
-	    System.out.println("Saisir le symbole que vous voulez supprimer :");
-	    choix=lectureClavier.next().charAt(0);
-	    Character ch=new Character(choix);
-		num=alphabet.indexOf(ch);
-		if(num >= 0){
-		alphabet.remove(num);
-		System.out.println("la suppression est faite avec succés ");
-		}
-		else
-		System.out.println("ce charactère n'existe pas ");
-	}
+	
+	//no longer needed, cette fonction à été implementée dans le programme principal
+	
+	/*public void supprimerSymbole(char choix){
+		
+	}*/
 
 	public int tailleAlphabet(){
 		return alphabet.size();
