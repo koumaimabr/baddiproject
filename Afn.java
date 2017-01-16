@@ -37,11 +37,13 @@ public class Afn{
 		return alphabet.size();
 	}
 
-	public void affichageAlphabet(){
-		 int taille=tailleAlphabet();
+	public String affichageAlphabet(){
+		String affichAlphabet ="";
+		 int taille = tailleAlphabet();
 		 for(int i=0;i<taille;i++){
-			 System.out.print(alphabet.get(i)+"\t");
+			 affichAlphabet += alphabet.get(i)+" ";
 		 }
+		 return affichAlphabet;
 	}
 
 	public void menuAlphabet(){

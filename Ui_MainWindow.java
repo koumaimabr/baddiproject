@@ -15,6 +15,10 @@ public class Ui_MainWindow extends QMainWindow
 	public static Afn exemple1;
 	public static Afntoafd exemple2;
 	
+	/***********************************************************************************
+	 *                               DECLARATIONS
+	 ***********************************************************************************/
+	
 	// declaration des variables, buttons, widgets ..etc pour la MainWindow
 	public static QMainWindow initWindow;
     public static QWidget centralwidgetMainWin;
@@ -55,7 +59,7 @@ public class Ui_MainWindow extends QMainWindow
     public boolean errorSymbolShown = false;
     
 
-    // Declarations pour le "del symbols" dialog box (pour ajouter un nouveau symbole)
+    // Declarations pour le "del symbols" dialog box (pour supprimer un symbole)
     
     public QPushButton quitButtonDelSymbolBox;
     public QPushButton delSymbolPopUpBoxButton;
@@ -63,10 +67,26 @@ public class Ui_MainWindow extends QMainWindow
     public QLabel delSymbolLabel;
     public QLabel errorSymbolsEmpty;
     public QDialog delSymbolDialogBox;
+    
+    // Le message box qui apparait quand l'utilisateur essaye de supprimer un symbole
+    // alors qu'il n'a pas encore saisi de symboles
+    
     public QMessageBox warnSymbolEmpty;
-    public QMessageBox warnSymbolNull;
+    public QMessageBox warnSymbolNull; 
+    
+    // Message box pour afficher l'alphabet   
+    public QMessageBox displayAlphabetMsgBox;
+    
+    // Message box pour afficher la taille de l'alphabet   
+    public QMessageBox displayAlphabetSizeMsgBox;
+
+
 
     // fin de Add symbol diolog box declarations
+    
+    /*************************************************************************************
+     ************************  La Main Window du programme     ***************************
+     *************************************************************************************/
     
    //fonction de la mainWindow
     public Ui_MainWindow()
@@ -167,7 +187,11 @@ public class Ui_MainWindow extends QMainWindow
         		+ " et/ou le minimiser.</p></body></html>", null));
     } 
     
- //Fonction de la seconde fênetre  
+
+	/***********************************************************************************
+	 **********************    FONCTION DE LA SECONDE FENÊTRE   ************************
+	 ***********************************************************************************/
+    
  public void setupCheckboxes1() 
  {
 	//Cacher le contenu du widget central
@@ -223,6 +247,9 @@ public class Ui_MainWindow extends QMainWindow
         
      quitButton1.clicked.connect(this, "close()");
      addSymbol.clicked.connect(this, "addSymbolsBox()"); //Call addSymbols() quand l'utilisateur clique sur ce boutton
+     displayAlphabet.clicked.connect(this, "displayAlphabetMessageBox()"); 
+     displayAlphabetSize.clicked.connect(this, "displayAlphabetSizeMessageBox()"); 
+     
      addSymbol.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Ajouter un symbole", null));
      removeSymbol.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Supprimer un symbole", null));
      displayAlphabet.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Afficher un alphabet", null));
@@ -254,7 +281,10 @@ public class Ui_MainWindow extends QMainWindow
      this.connectSlotsByName();
  }
 
- //add symbols dialog box
+	/***********************************************************************************
+	 ****************    LE DIALOG BOX POUR AJOUTER UN SYMBOLE  ************************
+	 ***********************************************************************************/
+ 
     public void addSymbolsBox()
     {
     	
@@ -302,7 +332,11 @@ public class Ui_MainWindow extends QMainWindow
         addSymbolDialogBox.connectSlotsByName(); 
         
     }
-    //La fonction qui permet d'ajouter un symbole
+    
+	/***********************************************************************************
+	 **********************    FONCTION POUR AJOUTER UN SYMBOLE   **********************
+	 ***********************************************************************************/
+    
     public void addSymbol()
     {
         if (enterSymbolEditBox.text().isEmpty() ) {
@@ -310,9 +344,11 @@ public class Ui_MainWindow extends QMainWindow
         	QMessageBox.critical(addSymbolDialogBox, "Error", "Please enter a symbol!");
         	return;
         }
+        
     	char symbolEntered;  	
         symbolEntered = new Character(enterSymbolEditBox.text().charAt(0));
         System.out.println("Vous avez saisi" +symbolEntered);
+        
         // Vérifier si le symbole saisi existe déja, et afficher un erreur si c'est la cas
 		if (exemple1.alphabet.indexOf(symbolEntered) > -1)
 		{
@@ -334,13 +370,19 @@ public class Ui_MainWindow extends QMainWindow
         
     }
     
+	/***********************************************************************************
+	 ********************** DIALOG BOX POUR SUPPRIMER UN SYMBOLE   *********************
+	 ***********************************************************************************/
+    
     public void delSymbolsBox()
     {
-    	if (exemple1.alphabet.isEmpty()) {
+    	if (exemple1.alphabet.isEmpty()) 
+    	{
     		warnSymbolEmpty = new QMessageBox(centralwidgetCheckboxes1);
     		QMessageBox.critical(centralwidgetCheckboxes1, "Erreur", "Vous n'avez saisi aucun symbole!");
     		return;
     	}
+    	
     	delSymbolDialogBox = new QDialog(centralwidgetCheckboxes1);
     	delSymbolDialogBox.setObjectName("delSymbolDialogBox");
     	delSymbolDialogBox.setEnabled(true);
@@ -355,9 +397,10 @@ public class Ui_MainWindow extends QMainWindow
         delSymbolComboBox.setObjectName("enterSymbolEditBox");
         delSymbolComboBox.setGeometry(new QRect(50, 90, 191, 31));
         List<String> symbolsStringList = new ArrayList<String>(exemple1.alphabet.size());
-        for (char tchar : exemple1.alphabet) { 
+        for (char tchar : exemple1.alphabet) 
+        { 
         	symbolsStringList.add(String.valueOf(tchar)); 
-        		}
+        }
         delSymbolComboBox.insertItems(1, symbolsStringList);
         delSymbolLabel = new QLabel(delSymbolDialogBox);
         delSymbolLabel.setObjectName("saisirSymboleLabel");
@@ -388,7 +431,11 @@ public class Ui_MainWindow extends QMainWindow
         delSymbolDialogBox.connectSlotsByName(); 
         
     }
-    //La fonction qui permet d'ajouter un symbole
+   
+	/***********************************************************************************
+	 **********************    FONCTION POUR SUPPRIMER UN SYMBOLE  *********************
+	 ***********************************************************************************/
+    
     public void delSymbol()
     {
     	if (delSymbolComboBox.count() < 1) {
@@ -402,16 +449,47 @@ public class Ui_MainWindow extends QMainWindow
     	
         // Vérifier si le symbole saisi existe déja, et afficher un erreur si c'est la cas
         // errorSymbolAlreadyExist
-        	
-        
+        	   
     }
+    
+	/***********************************************************************************
+	 **********************    FONCTION POUR SUPPRIMER UN SYMBOLE  *********************
+	 ***********************************************************************************/
+    
+    public void displayAlphabetMessageBox()
+    {
+    	String displayAlphabetText = "";
+    	displayAlphabetText = "A = {"+exemple1.affichageAlphabet()+"}";
+
+    	displayAlphabetMsgBox = new QMessageBox(centralwidgetCheckboxes1);
+		QMessageBox.information(centralwidgetCheckboxes1, "Voici l'alphabet saisi :", displayAlphabetText);
+		
+    }
+    
+    /***********************************************************************************
+	 ******************   FONCTION POUR AFFICHER LA TAILLE D'UN ALPHABET ***************
+	 ***********************************************************************************/
+    
+    public void displayAlphabetSizeMessageBox()
+    {
+    	String displayAlphabetSize = "La taille de votre alphabet est :  ";;
+
+    	displayAlphabetSizeMsgBox = new QMessageBox(centralwidgetCheckboxes1);
+		QMessageBox.information(centralwidgetCheckboxes1, "Taille de l'alphabet"
+				+ "si :", displayAlphabetSize+exemple1.tailleAlphabet());
+		
+    }
+    
+	/***********************************************************************************
+	 *************************************** MAIN **************************************
+	 ***********************************************************************************/
+    
 	public static void main(String[] args) 
 	{
          exemple1 = new Afn();
          exemple2 = new Afntoafd();
 
-		QApplication.initialize(args);
-    	 
+		QApplication.initialize(args); 
 
 		initWindow = new Ui_MainWindow();
 		
