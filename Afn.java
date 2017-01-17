@@ -1,4 +1,3 @@
-
 package afnTOafd;
 import java.util.*;
 public class Afn{
@@ -17,33 +16,47 @@ public class Afn{
 		etatsFinaux= new ArrayList <String>() ;
 	}
 	//////////////////////alphabet /////////////////////////////////////////////////////////////////////
-	
-	// UPDATE : Le dialogBox vÃ©rifie que l'utilisateur a saisi un seul caractÃ¨re donc j'ai modifÃ© cette partie
-	
-	public void ajouterSymbole(char a)
-	{
+	public void ajouterSymbole(){
+		char a;int z;
+		System.out.print("donner un symbole de type charactère:   ");
+		a=lectureClavier.next().charAt(0);
+		if(tailleAlphabet()!=0){
+			z=alphabet.indexOf(a);
+			if(z !=-1){
+			 System.out.println("ce sympole existe deja, le  charactère est refusé");}
+			
+			else{alphabet.add(new Character(a));
+			System.out.println("votre symbole ajouté est :   "+a);}
+				}
+			else{
 		alphabet.add(new Character(a));
+		System.out.println("votre symbole ajouté est :   "+a);}
 		
 	}
 
-	
-	//no longer needed, cette fonction Ã  Ã©tÃ© implementÃ©e dans le programme principal
-	
-	/*public void supprimerSymbole(char choix){
-		
-	}*/
+	public void supprimerSymbole(){
+	    int num;char choix;
+	    System.out.println("Saisir le symbole que vous voulez supprimer :");
+	    choix=lectureClavier.next().charAt(0);
+	    Character ch=new Character(choix);
+		num=alphabet.indexOf(ch);
+		if(num >= 0){
+		alphabet.remove(num);
+		System.out.println("la suppression est faite avec succés ");
+		}
+		else
+		System.out.println("ce charactère n'existe pas ");
+	}
 
 	public int tailleAlphabet(){
 		return alphabet.size();
 	}
 
-	public String affichageAlphabet(){
-		String affichAlphabet ="";
-		 int taille = tailleAlphabet();
+	public void affichageAlphabet(){
+		 int taille=tailleAlphabet();
 		 for(int i=0;i<taille;i++){
-			 affichAlphabet += alphabet.get(i)+" ";
+			 System.out.print(alphabet.get(i)+"\t");
 		 }
-		 return affichAlphabet;
 	}
 
 	public void menuAlphabet(){
@@ -55,7 +68,7 @@ public class Afn{
 	}
 	//////////////////////////Etats
 	public void menuEtat(){
-		System.out.println("choix 1: ajouterun Ã©tat:    ");
+		System.out.println("choix 1: ajouterun état:    ");
 		//System.out.println("choix 2: supprimer etat:    ");
 		System.out.println("choix 2: afficher etat:     ");
 		System.out.println("choix 3: afficher taille etats");
@@ -65,7 +78,7 @@ public class Afn{
 	public void ajouterEtats(){
 		int  a;String e;
 	   
-		System.out.print("donnez le nombre des Ã©tats que vous souhaitez utilisÃ©s \n dans ce afd, par la suite on vous gÃ©nÃ©ra les noms de ce Ã©tats comme suit en respectant l'ordre : q0,q1,q2,q3,....tel que q0 est \n l'Ã©tat initial;cette dÃ©marche simplifie l'Ã©tude par la suite:    ");
+		System.out.print("donnez le nombre des états que vous souhaitez utilisés \n dans ce afd, par la suite on vous généra les noms de ce états comme suit en respectant l'ordre : q0,q1,q2,q3,....tel que q0 est \n l'état initial;cette démarche simplifie l'étude par la suite:    ");
 		a=lectureClavier.nextInt();
 
 		for(int i=0;i<a;i++){
@@ -78,13 +91,13 @@ public class Afn{
 	public void supprimeretat(){
 	    int num;
 	    String choix;
-	    System.out.print("saisir l'Ã©tat : ");
+	    System.out.print("saisir l'état : ");
 	    choix=lectureClavier.nextLine();
 	    num=alphabet.indexOf(choix);
 	    if(num != -1)
 		alphabet.remove(num);
 	    else 
-	    	System.out.print("cette Ã©tat n'existe pas ");	
+	    	System.out.print("cette état n'existe pas ");	
 		
 	}
 
@@ -101,11 +114,13 @@ public class Afn{
 	 }
 	/////////////////////////////////////////Etats finaux
 	public void saisirEtatFinaux(){
-		String f;boolean test;
-		System.out.println("Veuillez saisir le nombre d'Ã©tats finaux: ");
-		int nombreEtatFinaux=lectureClavier.nextInt();
+		String f;boolean test;int nombreEtatFinaux;
+		do{
+		System.out.println("Veuillez saisir le nombre d'états finaux: ");
+	 nombreEtatFinaux=lectureClavier.nextInt();
+	      }while(nombreEtatFinaux<=0);
 		for(int i=0;i<nombreEtatFinaux;i++){
-			System.out.print("Veuillez saisir le"+(1+i)+" Ã©tat final: ");
+			System.out.print("Veuillez saisir le"+(1+i)+" état final: ");
 		do{
 			f=lectureClavier.nextLine();
 			test=verifierEtat(f);
@@ -130,7 +145,7 @@ public class Afn{
 	/*
 	public void saisirEtatInitial(){
 		String f;boolean test;
-		System.out.print("Veuillez saisir l'Ã©tat initial:   ");
+		System.out.print("Veuillez saisir l'état initial:   ");
 		do{
 			f=lectureClavier.nextLine();
 			test=verifierEtat(f);
@@ -144,7 +159,7 @@ public class Afn{
 	}
 
 	public void affichageEtatsInitial(){
-	  System.out.println("l'Ã©tat initial de votre AFD est : "+getEtatInitial());
+	  System.out.println("l'état initial de votre AFD est : "+getEtatInitial());
 	}
 ///////////////////////////////////////////fonction transition::::::
    public void fonctionTrans(){
@@ -154,13 +169,13 @@ for(int i=0;i<etats.size();i++){
 String q=etats.get(i);
 for(int j=0;j<alphabet.size()+1;j++){
 if(j==alphabet.size()){
-System.out.println("donnez le rÃ©sultat de ("+q+",'epsilon')");
-System.out.println("choisissez soit 'vide' ou 'un ou plusieurs Ã©tats' ");
+System.out.println("donnez le résultat de ("+q+",'epsilon')");
+System.out.println("choisissez soit 'vide' ou 'un ou plusieurs états' ");
 }
 else{
 char a=alphabet.get(j);
-System.out.println("donnez le rÃ©sultat de ("+q+","+a+")");
-System.out.println("choisissez soit 'vide' ou 'un ou plusieurs Ã©tats', veuillez saisir 1 ou 2  : ");
+System.out.println("donnez le résultat de ("+q+","+a+")");
+System.out.println("choisissez soit 'vide' ou 'un ou plusieurs états', veuillez saisir 1 ou 2  : ");
 }
 int re=lectureClavier.nextInt();
 if(re == 1){
@@ -168,11 +183,11 @@ fonctionTransition[i][j]="vide";
 }
 if(re == 2){
  tab=new ArrayList <String> ();
-System.out.println("saisir le nombre d'Ã©tats");
+System.out.println("saisir le nombre d'états");
  r=lectureClavier.nextInt();
-System.out.println("donnez le rÃ©sultat de cette transition Ã©tat par Ã©tat :   ");
+System.out.println("donnez le résultat de cette transition état par état :   ");
 for(int l=1;l<=r;l++){
-System.out.print("donnez le "+l+" Ã©tat :   ");
+System.out.print("donnez le "+l+" état :   ");
 do{
 var=lectureClavier.nextLine();
  y =etats.indexOf(var);
@@ -226,4 +241,3 @@ return true;
 	
 
 }
-
