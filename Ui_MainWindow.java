@@ -14,6 +14,7 @@ public class Ui_MainWindow extends QMainWindow
 {
 	public static Afn exemple1;
 	public static Afntoafd exemple2;
+	public static Afd resultatFinal;
 	
 	/***********************************************************************************
 	 *                               DECLARATIONS
@@ -105,12 +106,22 @@ public class Ui_MainWindow extends QMainWindow
     public QTextBrowser enterNumberOfFinalStates;
     public QSpinBox finalStatesNumber;
     
+    //Afficher les etats
+    public QMessageBox displayStatesMessageBox;
+    
     // Afficher une erreur si l'utilisateur clique sur "suivant" sans saisir les etats  
     public QMessageBox displayErrorNoStateEnteredMsgBox;
     
-
+    // Le dialog box pour ajouter un etat
+    public QPushButton AddStatesCancelBoxButton;
+    public QPushButton AddStatesBoxConfirmButton;
+    public QSpinBox AddStatesDialogBoxSpinBox;
+    public QLabel addStatesDialogBoxlabel;
+    public QTextEdit addStatesDialogBoxTextEdit;
+    public QDialog AddStatesDialogBox ;
     
     //Fin de la final state window
+    
     
     
     /*************************************************************************************
@@ -487,13 +498,13 @@ public class Ui_MainWindow extends QMainWindow
     }
     
 	/***********************************************************************************
-	 **********************    FONCTION POUR SUPPRIMER UN SYMBOLE  *********************
+	 **********************    FONCTION POUR AFFICHER L'ALPHABET  **********************
 	 ***********************************************************************************/
     
     public void displayAlphabetMessageBox()
     {
     	String displayAlphabetText = "";
-    	displayAlphabetText = "        A = {"+exemple1.affichageAlphabet()+"}        ";
+    	displayAlphabetText = "                A = { "+exemple1.affichageAlphabet()+"}                  ";
 
     	displayAlphabetMsgBox = new QMessageBox(centralwidgetCheckboxes1);
 		QMessageBox.information(centralwidgetCheckboxes1, "Voici l'alphabet saisi :", displayAlphabetText);
@@ -568,7 +579,8 @@ public class Ui_MainWindow extends QMainWindow
 	    this.setCentralWidget(centralwidgetStatesWindow);
 	    quitButtonStatesWindow.pressed.connect(this, "close()");
 	    nextButtonStatesWindow.clicked.connect(this, "setupFinalStateWindow()");
-	
+	    addState.clicked.connect(this, "addStatesBox()");
+	    displayStates.clicked.connect(this,"displayStatesMessageBox()");
 	    centralwidgetStatesWindow.connectSlotsByName();
 	    
 	    this.setWindowTitle(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "MainWindow", null));
@@ -636,7 +648,7 @@ public class Ui_MainWindow extends QMainWindow
           quitButtonFinalStateWindow.pressed.connect(this, "close()");
 
           centralwidgetFinalStateWindow.connectSlotsByName();
-          
+         
           this.setWindowTitle(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "MainWindow", null));
           textBrowserFinalStateWindow.setHtml(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "<!DOCTYPE HTML"
           + " PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"+
@@ -667,6 +679,79 @@ public class Ui_MainWindow extends QMainWindow
 		  + " Veuillez saisir le nombre d'\u00e9tats finaux:</p></body></html>", null));
 		    	
     }
+
+	/***********************************************************************************
+	 ********************** DIALOG BOX POUR AJOUTER UN ETAT   **************************
+	 ***********************************************************************************/
+    
+    public void addStatesBox()
+    {
+    	AddStatesDialogBox = new QDialog(centralwidgetStatesWindow);
+	    AddStatesDialogBox.setObjectName("AddStatesDialogBox");
+	    AddStatesDialogBox.resize(new QSize(390, 217).expandedTo(AddStatesDialogBox.minimumSizeHint()));
+	    AddStatesCancelBoxButton = new QPushButton(AddStatesDialogBox);
+	    AddStatesCancelBoxButton.setObjectName("AddStatesCancelBoxButton");
+	    AddStatesCancelBoxButton.setGeometry(new QRect(290, 170, 82, 28));
+	    AddStatesBoxConfirmButton = new QPushButton(AddStatesDialogBox);
+	    AddStatesBoxConfirmButton.setObjectName("AddStatesBoxConfirmButton");
+	    AddStatesBoxConfirmButton.setGeometry(new QRect(200, 170, 82, 28));
+	    AddStatesDialogBoxSpinBox = new QSpinBox(AddStatesDialogBox);
+	    AddStatesDialogBoxSpinBox.setObjectName("AddStatesDialogBoxSpinBox");
+	    AddStatesDialogBoxSpinBox.setGeometry(new QRect(250, 120, 52, 23));
+	    AddStatesDialogBoxSpinBox.setMinimum(1);
+	    AddStatesDialogBoxSpinBox.setMaximum(99);
+	    addStatesDialogBoxlabel = new QLabel(AddStatesDialogBox);
+	    addStatesDialogBoxlabel.setObjectName("addStatesDialogBoxlabel");
+	    addStatesDialogBoxlabel.setGeometry(new QRect(70, 120, 181, 21));
+	    addStatesDialogBoxTextEdit = new QTextEdit(AddStatesDialogBox);
+	    addStatesDialogBoxTextEdit.setObjectName("addStatesDialogBoxTextEdit");
+	    addStatesDialogBoxTextEdit.setGeometry(new QRect(10, 10, 371, 71));
+	    
+	
+	    AddStatesDialogBox.connectSlotsByName();
+	    AddStatesCancelBoxButton.pressed.connect(AddStatesDialogBox, "close()");
+	    AddStatesBoxConfirmButton.clicked.connect(this, "addStates()");
+	    
+	    AddStatesDialogBox.setWindowTitle(com.trolltech.qt.core.QCoreApplication.translate("AddStatesDialogBox", "Ajouter les états", null));
+        AddStatesCancelBoxButton.setText(com.trolltech.qt.core.QCoreApplication.translate("AddStatesDialogBox", "Annuler", null));
+        AddStatesBoxConfirmButton.setText(com.trolltech.qt.core.QCoreApplication.translate("AddStatesDialogBox", "Confirmer", null));
+        addStatesDialogBoxlabel.setText(com.trolltech.qt.core.QCoreApplication.translate("AddStatesDialogBox", "Saisir le nombre d'\u00e9tats", null));
+        addStatesDialogBoxTextEdit.setHtml(com.trolltech.qt.core.QCoreApplication.translate("AddStatesDialogBox", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"+
+        "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"+
+		"p, li { white-space: pre-wrap; }\n"+
+		"</style></head><body style=\" font-family:'Noto Sans'; font-size:10pt; font-weight:400; font-style:normal;\">"
+		+ "\n"+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;"
+		+ " -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic;\">Veuillez saisir le nombre des"
+		+ " \u00e9tats de votre automate.</span></p>\n"+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px;"
+	    + " margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic;\">"
+	    + "Les noms des \u00e9tats vont \u00eatre g\u00e9n\u00e9r\u00e9s automatiquement  (q0 , q1 , ... qn), avec q0 "
+	    + "\u00e9tant l'\u00e9tat initial.</span></p></body></html>", null));
+        AddStatesDialogBox.show();
+    }
+
+    /***********************************************************************************
+	 **********************    FONCTION POUR AJOUTER LES ETAT **************************
+	 ***********************************************************************************/
+    
+    public void addStates()
+    {
+    	exemple1.ajouterEtats(AddStatesDialogBoxSpinBox.value());
+    	AddStatesDialogBox.close();
+    }
+    
+	/***********************************************************************************
+	 **********************    FONCTION POUR AFFICHER LES ETATS  ***********************
+	 ***********************************************************************************/
+    
+    public void displayStatesMessageBox()
+    {
+    	String displayStatesText = "";
+    	displayStatesText = "                Voici les états = { "+exemple1.affichageEtats()+" }                  ";
+
+    	displayAlphabetMsgBox = new QMessageBox(centralwidgetStatesWindow);
+		QMessageBox.information(centralwidgetStatesWindow, "Les états", displayStatesText);
+		
+    }
     
 	/***********************************************************************************
 	 *************************************** MAIN **************************************
@@ -676,7 +761,8 @@ public class Ui_MainWindow extends QMainWindow
 	{
          exemple1 = new Afn();
          exemple2 = new Afntoafd();
-
+         resultatFinal= new Afd();
+         
 		QApplication.initialize(args); 
 
 		initWindow = new Ui_MainWindow();
