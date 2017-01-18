@@ -7,6 +7,7 @@
 	    public ArrayList < String > etatsFinaux;
 	    public String[][] fonctionTransition;
 	    public String etatInitial;
+	    public int nombreEtatFinaux;
 
 	    Scanner lectureClavier = new Scanner(System.in);
 	    //////////////////////constructeur ///////////////////////////////////////////////////////////////////
@@ -121,7 +122,6 @@
 	    public void saisirEtatFinaux() {
 	        String f;
 	        boolean test;
-	        int nombreEtatFinaux;
 	        do {
 	            System.out.println("Veuillez saisir le nombre d'états finaux: ");
 	            nombreEtatFinaux = lectureClavier.nextInt();

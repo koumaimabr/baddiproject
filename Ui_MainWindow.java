@@ -8,6 +8,7 @@ package afnTOafd;
 import java.util.*;
 
 import com.trolltech.qt.gui.* ;
+
 import com.trolltech.qt.core.*;
 
 public class Ui_MainWindow extends QMainWindow
@@ -109,8 +110,14 @@ public class Ui_MainWindow extends QMainWindow
     //Afficher les etats
     public QMessageBox displayStatesMessageBox;
     
+    //Afficher une erreur si l'utilisateur clique sur "Afficher les etat" sans saisir aucun etat
+    public QMessageBox displayStatesErrorMessageBox;
+    
     // Afficher une erreur si l'utilisateur clique sur "suivant" sans saisir les etats  
     public QMessageBox displayErrorNoStateEnteredMsgBox;
+    
+    // Afficher la taille des états
+    public QMessageBox displayStatesSizeMessageBox;
     
     // Le dialog box pour ajouter un etat
     public QPushButton AddStatesCancelBoxButton;
@@ -122,6 +129,24 @@ public class Ui_MainWindow extends QMainWindow
     
     //Fin de la final state window
     
+    //Box pour selectionner les etats finaux 
+    public QDialog enterFinalStatesDialogBox;
+    public QComboBox enterFinalStatesComboBox;
+    public QLabel enterStatesLabelText;
+    public QPushButton enterFinalStatesCloseButton;
+    public QPushButton enterFInalStatesNextButton;
+	private int iterFinalStates = 1;
+
+    // Premiere partie de la fonction  de transition
+	
+    public QWidget centralwidgetTransitionFct1;
+    public QTextBrowser textBrowser;
+    public QPushButton quitButtonTransitionFct1;
+    public QPushButton nextButtonTransitionFct1;
+    public QLabel labelFonctionTransition;
+    public QRadioButton checkboxEmptyState;
+    public QRadioButton checkboxMultipleStates;
+    public QSpinBox howManyStatesTransFct;
     
     
     /*************************************************************************************
@@ -385,7 +410,7 @@ public class Ui_MainWindow extends QMainWindow
     {
         if (enterSymbolEditBox.text().isEmpty() ) {
         	warnSymbolNull = new QMessageBox(addSymbolDialogBox);
-        	QMessageBox.critical(addSymbolDialogBox, "Error", "Please enter a symbol!");
+        	QMessageBox.critical(addSymbolDialogBox, "Erreur", "Vous n'avez pas saisi de symboles!");
         	return;
         }
         
@@ -581,6 +606,7 @@ public class Ui_MainWindow extends QMainWindow
 	    nextButtonStatesWindow.clicked.connect(this, "setupFinalStateWindow()");
 	    addState.clicked.connect(this, "addStatesBox()");
 	    displayStates.clicked.connect(this,"displayStatesMessageBox()");
+	    displayStatesSize.clicked.connect(this, "displayStatesSizeMessageBox()");
 	    centralwidgetStatesWindow.connectSlotsByName();
 	    
 	    this.setWindowTitle(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "MainWindow", null));
@@ -608,6 +634,107 @@ public class Ui_MainWindow extends QMainWindow
 	    quitButtonStatesWindow.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Quitter", null));
 	    nextButtonStatesWindow.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Suivant >", null));
     }
+    
+	/***********************************************************************************
+	 ********************** DIALOG BOX POUR AJOUTER UN ETAT   **************************
+	 ***********************************************************************************/
+    
+    public void addStatesBox()
+    {
+    	AddStatesDialogBox = new QDialog(centralwidgetStatesWindow);
+	    AddStatesDialogBox.setObjectName("AddStatesDialogBox");
+	    AddStatesDialogBox.resize(new QSize(390, 217).expandedTo(AddStatesDialogBox.minimumSizeHint()));
+	    AddStatesCancelBoxButton = new QPushButton(AddStatesDialogBox);
+	    AddStatesCancelBoxButton.setObjectName("AddStatesCancelBoxButton");
+	    AddStatesCancelBoxButton.setGeometry(new QRect(290, 170, 82, 28));
+	    AddStatesBoxConfirmButton = new QPushButton(AddStatesDialogBox);
+	    AddStatesBoxConfirmButton.setObjectName("AddStatesBoxConfirmButton");
+	    AddStatesBoxConfirmButton.setGeometry(new QRect(200, 170, 82, 28));
+	    AddStatesDialogBoxSpinBox = new QSpinBox(AddStatesDialogBox);
+	    AddStatesDialogBoxSpinBox.setObjectName("AddStatesDialogBoxSpinBox");
+	    AddStatesDialogBoxSpinBox.setGeometry(new QRect(250, 120, 52, 23));
+	    AddStatesDialogBoxSpinBox.setMinimum(1);
+	    
+	    //Le nombre des etats finaux que l'utilisateur peut choisir ne peut pas etre supérieur au nombre des etats
+	    AddStatesDialogBoxSpinBox.setMaximum(99);
+	    
+	    addStatesDialogBoxlabel = new QLabel(AddStatesDialogBox);
+	    addStatesDialogBoxlabel.setObjectName("addStatesDialogBoxlabel");
+	    addStatesDialogBoxlabel.setGeometry(new QRect(70, 120, 181, 21));
+	    addStatesDialogBoxTextEdit = new QTextEdit(AddStatesDialogBox);
+	    addStatesDialogBoxTextEdit.setObjectName("addStatesDialogBoxTextEdit");
+	    addStatesDialogBoxTextEdit.setGeometry(new QRect(10, 10, 371, 71));
+	    
+	    AddStatesCancelBoxButton.pressed.connect(AddStatesDialogBox, "close()");
+	    AddStatesBoxConfirmButton.clicked.connect(this, "addStates()");
+	    AddStatesDialogBox.connectSlotsByName();
+	    
+	    
+	    AddStatesDialogBox.setWindowTitle(com.trolltech.qt.core.QCoreApplication.translate("AddStatesDialogBox", "Ajouter les états", null));
+        AddStatesCancelBoxButton.setText(com.trolltech.qt.core.QCoreApplication.translate("AddStatesDialogBox", "Annuler", null));
+        AddStatesBoxConfirmButton.setText(com.trolltech.qt.core.QCoreApplication.translate("AddStatesDialogBox", "Confirmer", null));
+        addStatesDialogBoxlabel.setText(com.trolltech.qt.core.QCoreApplication.translate("AddStatesDialogBox", "Saisir le nombre d'\u00e9tats", null));
+        addStatesDialogBoxTextEdit.setHtml(com.trolltech.qt.core.QCoreApplication.translate("AddStatesDialogBox", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"+
+        "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"+
+		"p, li { white-space: pre-wrap; }\n"+
+		"</style></head><body style=\" font-family:'Noto Sans'; font-size:10pt; font-weight:400; font-style:normal;\">"
+		+ "\n"+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;"
+		+ " -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic;\">Veuillez saisir le nombre des"
+		+ " \u00e9tats de votre automate.</span></p>\n"+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px;"
+	    + " margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic;\">"
+	    + "Les noms des \u00e9tats vont \u00eatre g\u00e9n\u00e9r\u00e9s automatiquement  (q0 , q1 , ... qn), avec q0 "
+	    + "\u00e9tant l'\u00e9tat initial.</span></p></body></html>", null));
+        AddStatesDialogBox.show();
+    }
+
+    /***********************************************************************************
+	 **********************    FONCTION POUR AJOUTER LES ETAT **************************
+	 ***********************************************************************************/
+    
+    public void addStates()
+    {
+    	
+    	exemple1.ajouterEtats(AddStatesDialogBoxSpinBox.value());
+    	AddStatesDialogBox.close();
+    	addState.setEnabled(false);
+    }
+    
+	/***********************************************************************************
+	 **********************    FONCTION POUR AFFICHER LES ETATS  ***********************
+	 ***********************************************************************************/
+    
+    public void displayStatesMessageBox()
+    {
+        if (exemple1.etats.isEmpty() ) {
+        	warnSymbolNull = new QMessageBox(addSymbolDialogBox);
+        	QMessageBox.critical(addSymbolDialogBox, "Erreur", "Votre automate ne contient aucun état");
+        	return;
+        }
+        
+    	String displayStatesText = "";
+    	displayStatesText = "                Voici les états = { "+exemple1.affichageEtats()+" }                  ";
+
+    	displayStatesMessageBox = new QMessageBox(centralwidgetStatesWindow);
+		QMessageBox.information(centralwidgetStatesWindow, "Les états", displayStatesText);
+		
+    }
+    
+	/***********************************************************************************
+	 ********************   FONCTION POUR AFFICHER LA TAILLE DES ETATS  ****************
+	 ***********************************************************************************/
+    
+    public void displayStatesSizeMessageBox()
+    {
+
+    	String displayStatesSizeText = "";
+    	displayStatesSizeText = "    Votre automate contient "+exemple1.tailleEtats()+" états    ";
+
+    	displayStatesSizeMessageBox = new QMessageBox(centralwidgetStatesWindow);
+		QMessageBox.information(centralwidgetStatesWindow, "La taille des états", displayStatesSizeText);
+		
+    }
+    
+    
     
     /***********************************************************************************
 	 **********************    FONCTION DE LA 4 EME FENÊTRE   **************************
@@ -644,9 +771,13 @@ public class Ui_MainWindow extends QMainWindow
           finalStatesNumber = new QSpinBox(centralwidgetFinalStateWindow);
           finalStatesNumber.setObjectName("finalStatesNumber");
           finalStatesNumber.setGeometry(new QRect(500, 260, 111, 71));
+          finalStatesNumber.setMaximum(exemple1.tailleEtats());
           this.setCentralWidget(centralwidgetFinalStateWindow); 
           quitButtonFinalStateWindow.pressed.connect(this, "close()");
-
+          nextButtonFinalStateWindow.clicked.connect(this, "selectFinalStatesBox()");
+          nextButtonFinalStateWindow.clicked.connect(this,"addFinalStates()" );
+ 
+          
           centralwidgetFinalStateWindow.connectSlotsByName();
          
           this.setWindowTitle(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "MainWindow", null));
@@ -680,78 +811,154 @@ public class Ui_MainWindow extends QMainWindow
 		    	
     }
 
-	/***********************************************************************************
-	 ********************** DIALOG BOX POUR AJOUTER UN ETAT   **************************
-	 ***********************************************************************************/
-    
-    public void addStatesBox()
-    {
-    	AddStatesDialogBox = new QDialog(centralwidgetStatesWindow);
-	    AddStatesDialogBox.setObjectName("AddStatesDialogBox");
-	    AddStatesDialogBox.resize(new QSize(390, 217).expandedTo(AddStatesDialogBox.minimumSizeHint()));
-	    AddStatesCancelBoxButton = new QPushButton(AddStatesDialogBox);
-	    AddStatesCancelBoxButton.setObjectName("AddStatesCancelBoxButton");
-	    AddStatesCancelBoxButton.setGeometry(new QRect(290, 170, 82, 28));
-	    AddStatesBoxConfirmButton = new QPushButton(AddStatesDialogBox);
-	    AddStatesBoxConfirmButton.setObjectName("AddStatesBoxConfirmButton");
-	    AddStatesBoxConfirmButton.setGeometry(new QRect(200, 170, 82, 28));
-	    AddStatesDialogBoxSpinBox = new QSpinBox(AddStatesDialogBox);
-	    AddStatesDialogBoxSpinBox.setObjectName("AddStatesDialogBoxSpinBox");
-	    AddStatesDialogBoxSpinBox.setGeometry(new QRect(250, 120, 52, 23));
-	    AddStatesDialogBoxSpinBox.setMinimum(1);
-	    AddStatesDialogBoxSpinBox.setMaximum(99);
-	    addStatesDialogBoxlabel = new QLabel(AddStatesDialogBox);
-	    addStatesDialogBoxlabel.setObjectName("addStatesDialogBoxlabel");
-	    addStatesDialogBoxlabel.setGeometry(new QRect(70, 120, 181, 21));
-	    addStatesDialogBoxTextEdit = new QTextEdit(AddStatesDialogBox);
-	    addStatesDialogBoxTextEdit.setObjectName("addStatesDialogBoxTextEdit");
-	    addStatesDialogBoxTextEdit.setGeometry(new QRect(10, 10, 371, 71));
-	    
-	
-	    AddStatesDialogBox.connectSlotsByName();
-	    AddStatesCancelBoxButton.pressed.connect(AddStatesDialogBox, "close()");
-	    AddStatesBoxConfirmButton.clicked.connect(this, "addStates()");
-	    
-	    AddStatesDialogBox.setWindowTitle(com.trolltech.qt.core.QCoreApplication.translate("AddStatesDialogBox", "Ajouter les états", null));
-        AddStatesCancelBoxButton.setText(com.trolltech.qt.core.QCoreApplication.translate("AddStatesDialogBox", "Annuler", null));
-        AddStatesBoxConfirmButton.setText(com.trolltech.qt.core.QCoreApplication.translate("AddStatesDialogBox", "Confirmer", null));
-        addStatesDialogBoxlabel.setText(com.trolltech.qt.core.QCoreApplication.translate("AddStatesDialogBox", "Saisir le nombre d'\u00e9tats", null));
-        addStatesDialogBoxTextEdit.setHtml(com.trolltech.qt.core.QCoreApplication.translate("AddStatesDialogBox", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"+
-        "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"+
-		"p, li { white-space: pre-wrap; }\n"+
-		"</style></head><body style=\" font-family:'Noto Sans'; font-size:10pt; font-weight:400; font-style:normal;\">"
-		+ "\n"+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;"
-		+ " -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic;\">Veuillez saisir le nombre des"
-		+ " \u00e9tats de votre automate.</span></p>\n"+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px;"
-	    + " margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic;\">"
-	    + "Les noms des \u00e9tats vont \u00eatre g\u00e9n\u00e9r\u00e9s automatiquement  (q0 , q1 , ... qn), avec q0 "
-	    + "\u00e9tant l'\u00e9tat initial.</span></p></body></html>", null));
-        AddStatesDialogBox.show();
-    }
-
     /***********************************************************************************
-	 **********************    FONCTION POUR AJOUTER LES ETAT **************************
+	 ********************  FONCTION POUR AJOUTER LES ETAT FINAUX ***********************
 	 ***********************************************************************************/
     
-    public void addStates()
+    public void addFinalStates()
     {
-    	exemple1.ajouterEtats(AddStatesDialogBoxSpinBox.value());
+    	System.out.println("This value will be saved:" + finalStatesNumber.value());
+    	exemple1.nombreEtatFinaux = finalStatesNumber.value();
     	AddStatesDialogBox.close();
     }
     
-	/***********************************************************************************
-	 **********************    FONCTION POUR AFFICHER LES ETATS  ***********************
+    /***********************************************************************************
+	 ********************  DIALOG BOX POUR SELECTIONNER LES ETAT FINAUX ****************
 	 ***********************************************************************************/
     
-    public void displayStatesMessageBox()
+    public void selectFinalStatesBox()
     {
-    	String displayStatesText = "";
-    	displayStatesText = "                Voici les états = { "+exemple1.affichageEtats()+" }                  ";
-
-    	displayAlphabetMsgBox = new QMessageBox(centralwidgetStatesWindow);
-		QMessageBox.information(centralwidgetStatesWindow, "Les états", displayStatesText);
-		
+    	enterFinalStatesDialogBox = new QDialog(centralwidgetFinalStateWindow);
+    	enterFinalStatesComboBox = new QComboBox(enterFinalStatesDialogBox);
+    	enterFinalStatesComboBox.setObjectName("enterFinalStatesSpinBox");
+    	enterFinalStatesComboBox.setGeometry(new QRect(260, 40, 81, 21));
+        
+    	enterFinalStatesComboBox.addItems(exemple1.etats);
+        
+        enterStatesLabelText = new QLabel(enterFinalStatesDialogBox);
+        enterStatesLabelText.setObjectName("enterStatesLabelText");
+        enterStatesLabelText.setGeometry(new QRect(20, 40, 221, 21));
+        enterFinalStatesCloseButton = new QPushButton(enterFinalStatesDialogBox);
+        enterFinalStatesCloseButton.setObjectName("enterFinalStatesCloseButton");
+        enterFinalStatesCloseButton.setGeometry(new QRect(270, 90, 82, 28));
+        enterFinalStatesCloseButton.setEnabled(false);
+        enterFInalStatesNextButton = new QPushButton(enterFinalStatesDialogBox);
+        enterFInalStatesNextButton.setObjectName("enterFInalStatesNextButton");
+        enterFInalStatesNextButton.setGeometry(new QRect(180, 90, 82, 28));
+        enterFinalStatesCloseButton.clicked.connect(enterFinalStatesDialogBox, "close()");
+        enterFInalStatesNextButton.clicked.connect(this, "selectFinalStates()");
+        nextButtonFinalStateWindow.setEnabled(false);
+        
+        enterFinalStatesDialogBox.connectSlotsByName();
+               
+        enterFinalStatesDialogBox.setWindowTitle(com.trolltech.qt.core.QCoreApplication.translate("Form", "Les etats finaux", null));
+        enterStatesLabelText.setText(com.trolltech.qt.core.QCoreApplication.translate("Form", "S\u00e9lectionner"
+        + " l'\u00e9tat final n\u00b0 1 :", null));
+        
+        
+        
+        enterFinalStatesCloseButton.setText(com.trolltech.qt.core.QCoreApplication.translate("Form", "Terminer", null));
+        enterFInalStatesNextButton.setText(com.trolltech.qt.core.QCoreApplication.translate("Form", "Suivant", null));
+        enterFinalStatesDialogBox.show();
     }
+    
+    /***********************************************************************************
+	 ********************  FONCTION POUR SELECTIONNER LES ETAT FINAUX ******************
+	 ***********************************************************************************/
+    
+    public void selectFinalStates()
+    {
+    	if (iterFinalStates == exemple1.nombreEtatFinaux )
+    	{
+    		enterFinalStatesCloseButton.setEnabled(true);
+    		enterFinalStatesDialogBox.close();
+       		nextButtonFinalStateWindow.clicked.connect(this,"fonctionTransitionPart1()");
+    		nextButtonFinalStateWindow.setEnabled(true);
+    		enterFInalStatesNextButton.setEnabled(false);
+ 
+    		return;
+    	}
+    	exemple1.etatsFinaux.add(enterFinalStatesComboBox.currentText());
+    	enterFinalStatesComboBox.removeItem(enterFinalStatesComboBox.currentIndex());
+    	iterFinalStates++;
+    	enterStatesLabelText.setText(com.trolltech.qt.core.QCoreApplication.translate("Form", 
+    			"S\u00e9lectionner"+ " l'\u00e9tat final n\u00b0 "+ iterFinalStates +" :", null));
+    }
+    	
+   
+    /***********************************************************************************
+	 *************   DIALOG BOX POUR LA FONCTION DE TRANSITION PART 1 ******************
+	 ***********************************************************************************/
+    
+    public void fonctionTransitionPart1()
+    {
+    	//Cacher le contenu du widget central
+    	 centralwidgetFinalStateWindow.hide();
+    	 
+         centralwidgetTransitionFct1 = new QWidget(centralwidgetFinalStateWindow);
+         centralwidgetTransitionFct1.setObjectName("centralwidgetTransitionFct1");
+         textBrowser = new QTextBrowser(centralwidgetTransitionFct1);
+         textBrowser.setObjectName("textBrowser");
+         textBrowser.setGeometry(new QRect(30, 20, 741, 101));
+         quitButtonTransitionFct1 = new QPushButton(centralwidgetTransitionFct1);
+         quitButtonTransitionFct1.setObjectName("quitButtonTransitionFct1");
+         quitButtonTransitionFct1.setGeometry(new QRect(680, 490, 82, 28));
+         nextButtonTransitionFct1 = new QPushButton(centralwidgetTransitionFct1);
+         nextButtonTransitionFct1.setObjectName("nextButtonTransitionFct1");
+         nextButtonTransitionFct1.setGeometry(new QRect(590, 490, 82, 28));
+         labelFonctionTransition = new QLabel(centralwidgetTransitionFct1);
+         labelFonctionTransition.setObjectName("labelFonctionTransition");
+         labelFonctionTransition.setGeometry(new QRect(120, 200, 151, 31));
+         labelFonctionTransition.setStyleSheet("font: 14pt \"Noto Sans\";");
+         checkboxEmptyState = new QRadioButton(centralwidgetTransitionFct1);
+         checkboxEmptyState.setObjectName("checkboxEmptyState");
+         checkboxEmptyState.setGeometry(new QRect(120, 250, 191, 31));
+         checkboxMultipleStates = new QRadioButton(centralwidgetTransitionFct1);
+         checkboxMultipleStates.setObjectName("checkboxMultipleStates");
+         checkboxMultipleStates.setGeometry(new QRect(120, 310, 131, 41));
+         howManyStatesTransFct = new QSpinBox(centralwidgetTransitionFct1);
+         howManyStatesTransFct.setObjectName("howManyStatesTransFct");
+         howManyStatesTransFct.setGeometry(new QRect(240, 320, 52, 23));
+         this.setCentralWidget(centralwidgetTransitionFct1);
+        
+         quitButtonTransitionFct1.pressed.connect(this, "close()");
+
+         this.connectSlotsByName();
+         
+         this.setWindowTitle(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "MainWindow", null));
+         textBrowser.setHtml(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"+
+		 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"+
+		 "p, li { white-space: pre-wrap; }\n"+
+		 "</style></head><body style=\" font-family:'Noto Sans'; font-size:10pt; font-weight:400; "
+		 + "font-style:normal;\">\n"+"<p align=\"center\" style=\"-qt-paragraph-type:empty; "
+		 + "margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; "
+		 + "text-indent:0px;\"><br /></p>\n"+"<p align=\"center\" style=\" margin-top:0px;"
+		 + " margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"
+		 + "\"><span style=\" font-size:12pt; text-decoration: underline;\">CONVERSTION D'UN </span>"
+		 + "<span style=\" font-size:12pt; font-weight:600; text-decoration: underline;\">AFN </span>"
+		 + "<span style=\" font-size:12pt; text-decoration: underline;\">EN UN </span><span style=\" "
+		 + "font-size:12pt; font-weight:600; text-decoration: underline;\">AFD</span></p>\n"+
+		 "<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px;"
+		 + " margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; "
+		 + "font-weight:600; text-decoration: underline;\"><br /></p>\n"+
+		 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px;"
+		 + " margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Ce programme permet de convertir"
+		 + " un <span style=\" font-weight:600;\">AFD</span> en un <span style=\" font-weight:600;\">"
+		 + "AFD</span> et/ou le minimiser.</p></body></html>", null));
+         quitButtonTransitionFct1.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Quitter", null));
+         nextButtonTransitionFct1.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Suivant >", null));
+         labelFonctionTransition.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "f(q0,0) = ?", null));
+         checkboxEmptyState.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Vide", null));
+         checkboxMultipleStates.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Plusieurs \u00e9tats", null));
+   
+         centralwidgetTransitionFct1.show();
+    }
+    
+    /***********************************************************************************
+	 *************   DIALOG BOX POUR LA FONCTION DE TRANSITION PART 2 ******************
+	 ***********************************************************************************/
+    
+    
     
 	/***********************************************************************************
 	 *************************************** MAIN **************************************
