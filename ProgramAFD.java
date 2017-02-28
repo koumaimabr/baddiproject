@@ -1,8 +1,11 @@
-/*package afnTOafd;
+package afnTOafd;
 import java.util.*;
 
 public class ProgramAFD {
 
+}
+
+	/*
 public  static void  main(String [] args){
 	Scanner lectureClavier = new Scanner(System.in);
 	Afn exemple1= new Afn();

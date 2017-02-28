@@ -1,14 +1,17 @@
 package afnTOafd;
-import java.util.*;
 
 public class Program {
 
+}
+	
+	/*
 public  static void  main(String [] args){
 	Scanner lectureClavier=new Scanner(System.in);
 	Afn exemple1= new Afn();
 	Afntoafd exemple2= new Afntoafd();
 	Afd resultatFinal= new Afd();
-	
+	Afntoafd mini= new Afntoafd();
+	//Ui_MainWindow mainw = new Ui_MainWindow();
 	int choix;boolean test=true;
     exemple1.menuAlphabet();
     
@@ -52,8 +55,28 @@ public  static void  main(String [] args){
     resultatFinal.affichageEtats();
     resultatFinal.affichageEtatsFinaux();
     resultatFinal.affichageEtatsInitial();
-    resultatFinal.AfficherFonctionTrans();
-    
+   // resultatFinal.AfficherFonctionTrans();
+   // resultatFinal.afficherFonctionTransitionM();
+    //mini.minimiser(resultatFinal);
+   resultatFinal.eliminerEtatInaccessible();
+   System.out.println("Printing elimini");
+   
+   print2DArray(resultatFinal.fonctionTransitionM);
+   
+   
+   resultatFinal.minimaliser();
+   System.out.println("printing after mini");
+   print2DArray(resultatFinal.fonctionTransitionM);
+   
 }
+static void print2DArray(String[][] array) {
+	for (int i = 0; i < array.length; i++) {
+		for (int j = 0; j < array[i].length; j++) {
+
+			System.out.println("Placeholder[" + i + "][" + j + "] = \"" + array[i][j] + "\"" + ";");
+		}
+	}
 
 }
+
+}*/
