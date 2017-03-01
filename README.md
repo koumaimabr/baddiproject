@@ -19,7 +19,10 @@ Then Import the Java files here as a new project in Eclipse. In properties of pr
 Then you can just run the project in eclipse, or export as a JAR. 
 
 For manually running:
-Compile the project as a JAR, and include the two files mentioned above as a class-path .
+Compile the project as a JAR, and include the two files mentioned above as a class-path.
+
+You can use the included JAR to run without a need to download QT jambi libraries, as they are included in it .
+Note: That JAR file has only the Linux 64 bit QT Jambi libraries for now. Other platforms will be included soon
 
 #Contributors
 This is a project for the languages theory class.
