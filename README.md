@@ -50,13 +50,13 @@ Select the final states :
 Enter the transition function:
 ![alt tag](http://ouissalart.com/nfa-project/NFA-Screenshots12.jpeg)
 
-#Contributors
+![alt tag](http://ouissalart.com/nfa-project/NFA-Screenshots15.jpeg)
+
+#Developers
 This is a project for the languages theory class.
 
 By :
-Ouissal Benameur,
-Oumaima Kabbouri and
-Charaf Boughriba
+Ouissal Benameur,Oumaima Kabbouri and Charaf Boughriba under the supervision of Dr. Youssef Baddi.
 
 
  
